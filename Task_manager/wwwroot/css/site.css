@@ -1,0 +1,48 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+.custom-cancel-button {
+    margin-left: 10px; /* расстояние между кнопками */
+}
+
+.swal2-actions {
+    display: flex; /* Используем Flexbox */
+    justify-content: space-between; /* Распределяем кнопки по горизонтали */
+}
+
+.custom-cancel-button {
+    width: 100px;
+    flex: 1; /* Устанавливаем ширину кнопки на равную часть доступного пространства */
+}
+
+.swal2-confirm {
+    margin-left: 10px;
+    width: 100px;
+    flex: 1; /* Устанавливаем ширину кнопки на равную часть доступного пространства */
+}
+
+.btn {
+    
+    box-sizing: border-box; /* Учитываем отступы и границы в ширине */
+}
+

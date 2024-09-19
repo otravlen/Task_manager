@@ -14,5 +14,9 @@ namespace Task_manager.Service.Interfaces
 
         Task<IBaseRespone<TaskVievModel>> GetTask(long id);
         Task<IBaseRespone<bool>> EndTask(long id);
+
+        Task<IBaseRespone<TaskEntity>> Update(TaskVievModel model);
+
+        Task<IBaseRespone<TaskEntity>> Delete(TaskVievModel model);
     }
 }

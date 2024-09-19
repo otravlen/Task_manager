@@ -1,6 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using System.Linq.Expressions;
+using Task_manager.Enum;
+using Task_manager.Models;
 
 namespace Task_manager.Domain
 {
@@ -13,6 +15,20 @@ namespace Task_manager.Domain
                 First().
                 GetCustomAttribute<DisplayAttribute>()?.GetName()??"Неопределённый";
         }
+        public static Priority GetPriorityFromDisplayName(this TaskVievModel model)
+        {
+            switch (model.Priority)
+            {
+                case "0":
+                    return Priority.Easy;
+                case "1":
+                    return Priority.Medium;
+                case "2":
+                    return Priority.High;
+                default:
+                    return Priority.Easy; 
+            }
+        }
     }
     public static class QueryExtensions
     {
@@ -23,4 +39,5 @@ namespace Task_manager.Domain
             return sourse;
         }
     }
+
 }

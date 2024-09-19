@@ -22,7 +22,7 @@ namespace Task_manager.Service.Implementations
             _logger = logger;
             }
 
-        public async Task<IBaseRespone<TaskVievModel>> GetTask(long id)
+        public async Task<IBaseRespone<TaskVievModel>> GetTask(long id) 
         {
             try
             {
@@ -40,6 +40,7 @@ namespace Task_manager.Service.Implementations
                     Id = task.Id,
                     Name = task.Name,
                     IsDone = task.IsDone == true ? "Готово" : "Не готово",
+                    IsDoneBool = task.IsDone,
                     Description = task.Description,
                     Priority = task.Priority.GetDisplayName(),
                     Created = task.Created.ToLongDateString(),
@@ -142,6 +143,86 @@ namespace Task_manager.Service.Implementations
             }
         }
 
+        public async Task<IBaseRespone<TaskEntity>> Update(TaskVievModel model)
+        {
+            try
+            {
+                model.Validate();
+                var task = await _taskRepository.GetAll()
+                   .FirstOrDefaultAsync(x => x.Id == model.Id);
+                
+
+                if (task == null)
+                {
+                    return new BaseRespone<TaskEntity>
+                    {
+                        Description = "Задача не найдена",
+                        StatusCode = StatusCode.TaskIsHasAlready
+                    };
+                }  
+                
+                _logger.LogInformation($"Запрос на удаление задачи - {model.Name}");
+
+                task.Name = model.Name;
+                task.Description = model.Description;
+                task.Priority = model.GetPriorityFromDisplayName();
+                task.IsDone = model.IsDone == "false"? false : true;
+                              
+                await _taskRepository.Update(task);
+                _logger.LogInformation($"Задача обновилась: {task.Name} ");
+
+                return new BaseRespone<TaskEntity>()
+                {
+                    Description = "Задача обновлена!",
+                    StatusCode = StatusCode.OK
+                };
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"[TaskService.Update]: {ex.Message}");
+                return new BaseRespone<TaskEntity>()
+                {
+                    Description = ex.Message,
+                    StatusCode = StatusCode.InternalServerError
+                };
+            }
+
+
+        }
+
+        public async Task<IBaseRespone<TaskEntity>> Delete(TaskVievModel model)
+        {
+            try
+            {
+                var task = await _taskRepository.GetAll()
+                  .FirstOrDefaultAsync(x => x.Id == model.Id);
+                if (task == null)
+                {
+                    return new BaseRespone<TaskEntity>
+                    {
+                        Description = "Задача не найдена",
+                        StatusCode = StatusCode.TaskIsHasAlready
+                    };
+                }
+                await _taskRepository.Delete(task);
+                return new BaseRespone<TaskEntity>()
+                {
+                    Description = "Задача удалена",
+                    StatusCode = StatusCode.OK
+                };
+             }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"[TaskService.Delete]: {ex.Message}");
+                return new BaseRespone<TaskEntity>()
+                {
+                    Description = ex.Message,
+                    StatusCode = StatusCode.InternalServerError
+                };
+            }
+        }
+
         public async Task<IBaseRespone<TaskEntity>> Create(CreateTaskVievModel model)
         {
             
@@ -193,12 +274,11 @@ namespace Task_manager.Service.Implementations
             {
                 var tasks = await _taskRepository.GetAll().                    
                     Where(x => x.IsDone).
-                    Where(x => x.Created.Date == DateTime.Today).
                     Select(x => new TaskVievModel()
                     {
                         Id = x.Id,
                         Name = x.Name,
-                        IsDone = x.IsDone == true ? "Готово" : "Не готово",
+                        IsDone = x.IsDone == false ? "Не готово": "Готово",
                         Description = x.Description,
                         Priority = x.Priority.GetDisplayName(),
                         Created = x.Created.ToLongDateString()

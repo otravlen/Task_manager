@@ -1,28 +1,43 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Task_manager.Service.Interfaces;
 
 namespace Task_manager.Controllers
 {
-    public class CreateTaskController : Controller
+    public class CompletedTasksController(ITaskService taskService) : Controller
     {
-        public ActionResult CreateTask()
+        private readonly ITaskService _taskService = taskService;
+
+        public ActionResult CompletedTasks()
         {
             return View();
         }
 
-        // GET: CreateTaskController/Details/5
-        public ActionResult Details(int id)
+        public async Task<IActionResult> GetCompletedTasks()
         {
-            return View();
+            var result = await _taskService.GetCompletedTasks();
+            return Json(new { data = result.Data });
         }
 
-        // GET: CreateTaskController/Create
+
+
+
+
+
+
+
+
+
+
+
+
+
+        // GET: CompletedTasksController/Create
         public ActionResult Create()
         {
             return View();
         }
 
-        // POST: CreateTaskController/Create
+        // POST: CompletedTasksController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(IFormCollection collection)
@@ -37,13 +52,13 @@ namespace Task_manager.Controllers
             }
         }
 
-        // GET: CreateTaskController/Edit/5
+        // GET: CompletedTasksController/Edit/5
         public ActionResult Edit(int id)
         {
             return View();
         }
 
-        // POST: CreateTaskController/Edit/5
+        // POST: CompletedTasksController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, IFormCollection collection)
@@ -58,13 +73,13 @@ namespace Task_manager.Controllers
             }
         }
 
-        // GET: CreateTaskController/Delete/5
+        // GET: CompletedTasksController/Delete/5
         public ActionResult Delete(int id)
         {
             return View();
         }
 
-        // POST: CreateTaskController/Delete/5
+        // POST: CompletedTasksController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, IFormCollection collection)
